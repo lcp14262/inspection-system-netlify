@@ -60,6 +60,7 @@ exports.handler = async function(event, context) {
         const tokenData = await tokenRes.json();
         
         const now = new Date();
+        const checkinTime = now.toISOString(); 
         const recordRes = await fetch(
             `https://open.feishu.cn/open-apis/bitable/v1/apps/${process.env.FEISHU_BITABLE_TOKEN}/tables/${process.env.FEISHU_TABLE_ID}/records`,
             {
@@ -68,7 +69,7 @@ exports.handler = async function(event, context) {
                 body: JSON.stringify({
                     fields: {
                         '点位名称': point.name,
-                        '巡检时间': now.toISOString(),
+                        '巡检时间': checkinTime.toISOString(),
                         '巡检结果': result,
                         'GPS纬度': lat, 'GPS经度': lng,
                         '距点位距离': Math.round(distance*10)/10,
