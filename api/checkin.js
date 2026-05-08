@@ -59,8 +59,8 @@ exports.handler = async function(event, context) {
         });
         const tokenData = await tokenRes.json();
         
-        const now = new Date();
-        const checkinTime = now.toISOString(); 
+        //const now = new Date();
+        const checkinTime = new Date().toISOString(); 
         const recordRes = await fetch(
             `https://open.feishu.cn/open-apis/bitable/v1/apps/${process.env.FEISHU_BITABLE_TOKEN}/tables/${process.env.FEISHU_TABLE_ID}/records`,
             {
