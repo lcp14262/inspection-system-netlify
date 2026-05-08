@@ -69,7 +69,7 @@ exports.handler = async function(event, context) {
                 body: JSON.stringify({
                     fields: {
                         '点位名称': point.name,
-                        '巡检时间': checkinTime.toISOString(),
+                        '巡检时间': checkinTime,
                         '巡检结果': result,
                         'GPS纬度': lat, 'GPS经度': lng,
                         '距点位距离': Math.round(distance*10)/10,
