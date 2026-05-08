@@ -1,18 +1,13 @@
 // api/checkin.js
 exports.handler = async function(event, context) {
-    // 处理浏览器预检请求 (CORS)
     if (event.httpMethod === 'OPTIONS') {
         return {
             statusCode: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type'
-            },
+            headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type' },
             body: ''
         };
     }
 
-    // 只接受 POST 请求
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
@@ -21,7 +16,6 @@ exports.handler = async function(event, context) {
         };
     }
 
-    // 解析请求数据
     let body;
     try {
         body = JSON.parse(event.body);
@@ -35,7 +29,6 @@ exports.handler = async function(event, context) {
 
     const { point_id, lat, lng, result, description } = body;
 
-    // 1. 验证点位
     const CHECKIN_POINTS = {
         'A001': { name: '1号厂房东侧', lat: 31.2304, lng: 120.6773, radius: 50 },
         'A002': { name: '2号仓库南门', lat: 31.2318, lng: 120.6790, radius: 50 },
@@ -46,7 +39,6 @@ exports.handler = async function(event, context) {
         return { statusCode: 400, headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify({ success: false, message: '点位不存在' }) };
     }
 
-    // 2. 计算距离
     const R = 6371000;
     const dLat = (point.lat - lat) * Math.PI / 180;
     const dLng = (point.lng - lng) * Math.PI / 180;
@@ -61,14 +53,12 @@ exports.handler = async function(event, context) {
     }
 
     try {
-        // 3. 获取飞书 Token
         const tokenRes = await fetch('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ app_id: process.env.FEISHU_APP_ID, app_secret: process.env.FEISHU_APP_SECRET }),
         });
         const tokenData = await tokenRes.json();
         
-        // 4. 写入多维表格
         const now = new Date();
         const recordRes = await fetch(
             `https://open.feishu.cn/open-apis/bitable/v1/apps/${process.env.FEISHU_BITABLE_TOKEN}/tables/${process.env.FEISHU_TABLE_ID}/records`,
