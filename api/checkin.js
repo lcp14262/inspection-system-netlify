@@ -53,12 +53,12 @@ exports.handler = async function(event, context) {
         }
 
         // 2. 获取北京时间
-        const now = new Date();
-        const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+        //const now = new Date();
+       // const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
 
         // 3. 创建记录
         const fields = {
-            '点位名称': point.name, '巡检时间': timeStr, '巡检结果': result,
+            '点位名称': point.name, '巡检时间': Date.now(), '巡检结果': result,
             'GPS纬度': lat, 'GPS经度': lng, '距点位距离': Math.round(distance*10)/10,
             '问题描述': description || '', '处理状态': result === '异常' ? '待处理' : '已解决',
         };
